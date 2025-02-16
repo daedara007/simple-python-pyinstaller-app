@@ -19,10 +19,9 @@ pipeline {
             }
             steps {
                 sh '''
-                    python -m venv /tmp/venv
-                    source /tmp/venv/bin/activate
-                    pip install pytest
-                    pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
+                    export HOME=/tmp
+                    pip install --target=/tmp/packages pytest
+                    PYTHONPATH=/tmp/packages pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
                 '''
             }
             post {
