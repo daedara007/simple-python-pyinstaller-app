@@ -17,7 +17,6 @@ node {
         docker.image(pyinstallerImage).pull()  // Ensure the latest image is pulled
 
         sh """
-            docker run --rm -v \$(pwd):/src -w /src cdrx/pyinstaller-linux:python2 \
             pyinstaller --onefile sources/add2vals.py
         """
 
