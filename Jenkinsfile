@@ -1,107 +1,33 @@
-pipeline {
-
-    agent none // Don't use any global agent
-
-    stages {
-
-        stage('Build') {
-
-            agent {
-
-                docker {
-
-                    image 'python:3.9'
-
-                }
-
-            }
-
-            steps {
-
-                sh 'python -m py_compile sources/add2vals.py sources/calc.py'
-
-                stash(name: 'compiled-results', includes: 'sources/*.py*')
-
-            }
-
+node {
+    stage('Build') {
+        docker.image('python:3.9').inside {
+            sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+            stash(name: 'compiled-results', includes: 'sources/*.py*')
         }
+    }
 
-        stage('Test') {
-
-            agent {
-
-                docker {
-
-                    image 'qnib/pytest'
-
-                }
-
-            }
-
-            steps {
-
-                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
-
-            }
-
-            post {
-
-                always {
-
-                    junit 'test-reports/results.xml'
-
-                }
-
-            }
-
+    stage('Test') {
+        docker.image('qnib/pytest').inside {
+            sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
         }
-
-        stage('Approval') {
-
-            steps {
-
-                input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk melanjutkan ke tahap Deploy)'
-
+        post {
+            always {
+                junit 'test-reports/results.xml'
             }
-
         }
+    }
 
-        stage('Deploy') {
+    stage('Approval') {
+        input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk melanjutkan ke tahap Deploy)'
+    }
 
-            agent {
-
-                docker {
-
-                    image 'python:3.9'
-
-                    args '-u root'
-
-                }
-
-            }
-
-            steps {
-
-                sh 'pip install pyinstaller'
-
-                sh 'pyinstaller --onefile sources/add2vals.py'
-
-                sleep time: 1, unit: 'MINUTES'
-
-                echo 'Pipeline has finished successfully.'
-
-            }
-
-            post {
-
-                success {
-
-                    archiveArtifacts 'dist/add2vals'
-
-                }
-
-            }
-
+    stage('Deploy') {
+        docker.image('python:3.9').inside('-u root') {
+            sh 'pip install pyinstaller'
+            sh 'pyinstaller --onefile sources/add2vals.py'
+            sleep 60 // 1 minute
+            echo 'Pipeline has finished successfully.'
         }
+        archiveArtifacts 'dist/add2vals'
     }
 }
