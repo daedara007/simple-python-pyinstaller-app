@@ -6,7 +6,7 @@ node {
 
     stage('Test') {
         echo 'Running tests...'
-        sh 'python3 -m unittest test_calc.py'
+        sh 'python3 -m unittest sources/test_calc.py'
     }
 
     stage('Deliver') {
