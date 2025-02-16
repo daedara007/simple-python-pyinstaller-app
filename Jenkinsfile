@@ -15,8 +15,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    echo 'Running unit tests...'
-                    sh '. venv/bin/activate && python3 -m unittest sources/test_calc.py'
+                    sh 'python3 -m unittest sources/test_calc.py'
                 }
             }
         }
