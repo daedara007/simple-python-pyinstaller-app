@@ -20,8 +20,10 @@ pipeline {
             steps {
                 sh '''
                     export HOME=/tmp
+                    mkdir -p /tmp/packages
                     pip install --target=/tmp/packages pytest
-                    PYTHONPATH=/tmp/packages pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
+                    export PYTHONPATH=/tmp/packages
+                    pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
                 '''
             }
             post {
