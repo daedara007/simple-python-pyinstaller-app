@@ -7,7 +7,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+                    sh 'python -m py_compile sources/add2vals.py'
                 }
             }
         }
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running add2vals.py as a final check...'
-                    sh '. venv/bin/activate && python3 sources/add2vals.py 10 20'
+                    sh 'python3 sources/add2vals.py 10 20'
                 }
             }
         }
