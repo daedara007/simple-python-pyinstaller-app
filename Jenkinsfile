@@ -1,7 +1,7 @@
 node {
     // Use docker in each stage
     stage('Build') {
-        docker.image('python:2-alpine').inside {
+        docker.image('docker.io/python:2-alpine').inside {
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
