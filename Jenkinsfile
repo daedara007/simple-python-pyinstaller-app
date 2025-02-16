@@ -14,9 +14,13 @@ node {
 
     stage('Deliver') {
         def pyinstallerImage = 'cdrx/pyinstaller-linux:python2'
-        docker.image(pyinstallerImage).pull()  // Ensure latest image is pulled
-        sh "docker run --rm -v \$(pwd):/src ${pyinstallerImage} pyinstaller --onefile sources/add2vals.py"
-        
+        docker.image(pyinstallerImage).pull()  // Ensure the latest image is pulled
+
+        sh """
+            docker run --rm -v \$(pwd):/src -w /src cdrx/pyinstaller-linux:python2 \
+            pyinstaller --onefile sources/add2vals.py
+        """
+
         archiveArtifacts artifacts: 'dist/add2vals', fingerprint: true
     }
 }
