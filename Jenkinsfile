@@ -6,20 +6,29 @@ node {
         }
     }
 
-    post {
-        always {
-            script {
-                if (fileExists('test-reports/results.xml')) {
-                    junit 'test-reports/results.xml'
-                } else {
-                    echo "Test report not found, skipping junit step."
+    stage('Test') {
+        docker.image('qnib/pytest').inside {
+            catchError(buildResult: 'FAILURE', stageResult: 'UNSTABLE') {
+                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+            }
+        }
+        post {
+            always {
+                script {
+                    if (fileExists('test-reports/results.xml')) {
+                        junit 'test-reports/results.xml'
+                    } else {
+                        echo "Test report not found, skipping junit step."
+                    }
                 }
             }
         }
     }
 
     stage('Approval') {
-        input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk melanjutkan ke tahap Deploy)'
+        node {
+            input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk melanjutkan ke tahap Deploy)'
+        }
     }
 
     stage('Deploy') {
