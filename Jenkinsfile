@@ -11,15 +11,16 @@ pipeline {
                 sh 'python -m py_compile sources/add2vals.py sources/calc.py'
             }
         }
+        
         stage('Test') {
             agent {
                 docker {
                     image 'python:3-alpine'
+                    args '-u root' // Run as root to avoid permission issues
                 }
             }
             steps {
                 sh '''
-                    export HOME=/tmp
                     mkdir -p /tmp/packages
                     pip install --target=/tmp/packages pytest
                     export PYTHONPATH=/tmp/packages
