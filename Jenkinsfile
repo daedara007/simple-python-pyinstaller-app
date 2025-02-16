@@ -1,18 +1,105 @@
-node {
-    stage('Build') {
-        echo 'Installing dependencies...'
-        sh 'pip3 install -r requirements.txt || echo "No requirements.txt found, skipping..."'
-        sh 'python3 -m py_compile sources/add2vals.py sources/calc.py'
+pipeline {
+
+    agent none // Don't use any global agent
+
+    stages {
+
+        stage('Build') {
+
+            agent {
+
+                docker {
+
+                    image 'python:3.9'
+
+                }
+
+            }
+
+            steps {
+
+                sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+
+                stash(name: 'compiled-results', includes: 'sources/*.py*')
+
+            }
+
+        }
+
+        stage('Test') {
+
+            agent {
+
+                docker {
+
+                    image 'qnib/pytest'
+
+                }
+
+            }
+
+            steps {
+
+                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+
+            }
+
+            post {
+
+                always {
+
+                    junit 'test-reports/results.xml'
+
+                }
+
+            }
+
+        }
+
+        stage('Approval') {
+
+            steps {
+
+                input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk melanjutkan ke tahap Deploy)'
+
+            }
+
+        }
+
+        stage('Deploy') {
+
+            agent {
+
+                docker {
+
+                    image 'cdrx/pyinstaller-linux:python3'
+
+                }
+
+            }
+
+            steps {
+
+                sh 'pyinstaller --onefile sources/add2vals.py'
+
+                sleep time: 1, unit: 'MINUTES'
+
+                echo 'Pipeline has finished successfully.'
+
+            }
+
+            post {
+
+                success {
+
+                    archiveArtifacts 'dist/add2vals'
+
+                }
+
+            }
+
+        }
+
     }
 
-    stage('Test') {
-        echo 'Running tests...'
-        sh 'python3 -m unittest sources/test_calc.py'
-    }
-
-    stage('Deliver') {
-        echo 'Archiving scripts...'
-        archiveArtifacts artifacts: '**/*.py', fingerprint: true
-        echo 'Delivery complete.'
-    }
 }
