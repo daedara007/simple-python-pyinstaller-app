@@ -4,7 +4,7 @@ pipeline {
         stage('Build') {
             agent {
                 docker {
-                    image 'python:2-alpine'
+                    image 'python:3-alpine'
                 }
             }
             steps {
@@ -14,11 +14,12 @@ pipeline {
         stage('Test') {
             agent {
                 docker {
-                    image 'qnib/pytest'
+                    image 'python:3-alpine'
                 }
             }
             steps {
-                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+                sh 'pip install pytest'  // Ensures pytest is available
+                sh 'pytest --verbose --junit-xml=test-reports/results.xml sources/test_calc.py'
             }
             post {
                 always {
@@ -29,7 +30,7 @@ pipeline {
         stage('Deliver') {
             agent {
                 docker {
-                    image 'cdrx/pyinstaller-linux:python2'
+                    image 'cdrx/pyinstaller-linux:python3'
                 }
             }
             steps {
@@ -37,7 +38,7 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts 'dist/add2vals'
+                    archiveArtifacts artifacts: 'dist/add2vals', fingerprint: true
                 }
             }
         }
