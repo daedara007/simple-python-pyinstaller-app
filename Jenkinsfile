@@ -66,40 +66,40 @@ pipeline {
 
         }
 
-        stage('Deploy') {
+    stage('Deploy') {
 
-            agent {
+                agent {
 
-                docker {
+                    docker {
 
-                    image 'cdrx/pyinstaller-linux:python3'
+                        image 'python:3.9'
 
-                }
+                        args '-u root'
 
-            }
-
-            steps {
-
-                sh 'pyinstaller --onefile sources/add2vals.py'
-
-                sleep time: 1, unit: 'MINUTES'
-
-                echo 'Pipeline has finished successfully.'
-
-            }
-
-            post {
-
-                success {
-
-                    archiveArtifacts 'dist/add2vals'
+                    }
 
                 }
 
-            }
+                steps {
+
+                    sh 'pip install pyinstaller'
+
+                    sh 'pyinstaller --onefile sources/add2vals.py'
+
+                    sleep time: 1, unit: 'MINUTES'
+
+                    echo 'Pipeline has finished successfully.'
+
+                }
+
+                post {
+
+                    success {
+
+                        archiveArtifacts 'dist/add2vals'
+
+                    }
+
+                }
 
         }
-
-    }
-
-}
