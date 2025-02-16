@@ -11,7 +11,7 @@ pipeline {
                 sh 'python -m py_compile sources/add2vals.py sources/calc.py'
             }
         }
-        
+
         stage('Test') {
             agent {
                 docker {
@@ -20,12 +20,7 @@ pipeline {
                 }
             }
             steps {
-                sh '''
-                    mkdir -p /tmp/packages
-                    pip install --target=/tmp/packages pytest
-                    export PYTHONPATH=/tmp/packages
-                    pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
-                '''
+                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
             }
             post {
                 always {
