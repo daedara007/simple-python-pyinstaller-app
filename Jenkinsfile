@@ -18,8 +18,12 @@ pipeline {
                 }
             }
             steps {
-                sh 'pip install pytest'
-                sh 'pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+                sh '''
+                    python -m venv venv
+                    source venv/bin/activate
+                    pip install pytest
+                    pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
+                '''
             }
             post {
                 always {
