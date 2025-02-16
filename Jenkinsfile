@@ -15,14 +15,14 @@ pipeline {
             agent {
                 docker {
                     image 'python:3-alpine'
-                    args '--user 1000:1000'
                 }
             }
             steps {
                 sh '''
-                    export HOME=/tmp
-                    pip install --target=/tmp/packages pytest
-                    python -m pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
+                    python -m venv /tmp/venv
+                    source /tmp/venv/bin/activate
+                    pip install pytest
+                    pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py
                 '''
             }
             post {
