@@ -7,10 +7,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    echo 'Setting up Python environment...'
-                    sh 'python3 -m venv venv'
-                    sh '. venv/bin/activate'
-                    sh 'pip install --upgrade pip'
+                    sh 'python -m py_compile sources/add2vals.py sources/calc.py'
                 }
             }
         }
