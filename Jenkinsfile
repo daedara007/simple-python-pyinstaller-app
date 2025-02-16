@@ -66,40 +66,42 @@ pipeline {
 
         }
 
-    stage('Deploy') {
+        stage('Deploy') {
 
-                agent {
+            agent {
 
-                    docker {
+                docker {
 
-                        image 'python:3.9'
+                    image 'python:3.9'
 
-                        args '-u root'
-
-                    }
+                    args '-u root'
 
                 }
 
-                steps {
+            }
 
-                    sh 'pip install pyinstaller'
+            steps {
 
-                    sh 'pyinstaller --onefile sources/add2vals.py'
+                sh 'pip install pyinstaller'
 
-                    sleep time: 1, unit: 'MINUTES'
+                sh 'pyinstaller --onefile sources/add2vals.py'
 
-                    echo 'Pipeline has finished successfully.'
+                sleep time: 1, unit: 'MINUTES'
+
+                echo 'Pipeline has finished successfully.'
+
+            }
+
+            post {
+
+                success {
+
+                    archiveArtifacts 'dist/add2vals'
 
                 }
 
-                post {
-
-                    success {
-
-                        archiveArtifacts 'dist/add2vals'
-
-                    }
-
-                }
+            }
 
         }
+    }
+}
