@@ -15,10 +15,8 @@ node {
         post {
             always {
                 script {
-                    if (fileExists('test-reports/results.xml')) {
                         junit 'test-reports/results.xml'
-                    } else {
-                        echo "Test report not found, skipping junit step."
+                    }  
                     }
                 }
             }
