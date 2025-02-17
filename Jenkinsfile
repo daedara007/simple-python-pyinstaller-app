@@ -35,7 +35,8 @@ node {
 
     // Tahap Deploy ke server
     stage('Deploy to Server') {
-                sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
-                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals'"
+        sh "scp sources/add2vals.py ${server}:${remotePath}/add2vals.py"
+        sh "ssh ${server} 'pip install pyinstaller && pyinstaller --onefile ${remotePath}/add2vals.py'"
+        sh "ssh ${server} 'chmod +x ${remotePath}/dist/add2vals && ${remotePath}/dist/add2vals'"
     }
 }
