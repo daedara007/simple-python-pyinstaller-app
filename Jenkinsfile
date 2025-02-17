@@ -25,9 +25,10 @@ node {
 
     // Tahap Deploy lokal
     stage('Deploy') {
-        docker.image('multiarch/qemu-user-static').inside {
+        docker.image('python:3.9').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
+            echo 'Pipeline has finished successfully.'
         }
         archiveArtifacts 'dist/add2vals'
     }
@@ -35,6 +36,6 @@ node {
     // Tahap Deploy ke server
     stage('Deploy to Server') {
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
-                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals'"
+                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals"
     }
 }
