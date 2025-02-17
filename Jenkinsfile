@@ -21,12 +21,18 @@ node {
     }
 
     // Tahap Deploy
-    stage('Deploy') {
-        docker.image('python:3.9').inside('-u root') {
-            sh 'pip install pyinstaller'
-            sh 'pyinstaller --onefile sources/add2vals.py'
-            echo 'Pipeline has finished successfully.'
+    stage('Deploy to Server') {
+        steps {
+            script {
+                def server = "user@your-server-ip" // Ganti dengan username dan IP server
+                def remotePath = "/opt/deploy"    // Ganti dengan path tujuan di server
+
+                // Copy file ke server menggunakan SCP atau rsync
+                sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
+
+                // Jalankan perintah di server menggunakan SSH
+                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals'"
+            }
         }
-        archiveArtifacts 'dist/add2vals'
     }
 }
