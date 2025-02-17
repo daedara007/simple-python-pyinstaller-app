@@ -1,4 +1,7 @@
 node {
+    def server = "kevin@192.168.1.200"  // Ganti dengan username dan IP server
+    def remotePath = "/opt/deploy"      // Ganti dengan path tujuan di server
+
     // Tahap build
     stage('Build') {
         docker.image('python:3.9').inside {
@@ -22,17 +25,7 @@ node {
 
     // Tahap Deploy
     stage('Deploy to Server') {
-        steps {
-            script {
-                def server = "kevin@192.168.1.200" // Ganti dengan username dan IP server
-                def remotePath = "/var/jenkins"    // Ganti dengan path tujuan di server
-
-                // Copy file ke server menggunakan SCP atau rsync
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
-
-                // Jalankan perintah di server menggunakan SSH
                 sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals'"
-            }
-        }
     }
 }
