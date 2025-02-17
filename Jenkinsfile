@@ -35,6 +35,7 @@ node {
     // Tahap Deploy ke server
     stage('Deploy to Server') {
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
-                echo 'Pipeline has finished successfully.'s
+                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals'"
+                echo 'Pipeline has finished successfully.'
     }
 }
