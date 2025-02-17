@@ -25,13 +25,14 @@ node {
 
     // Tahap Deploy lokal
     stage('Deploy') {
-        docker.image('arm64v8/python:3.9').inside {
+        docker.image('python:3.9').inside {
             sh 'pip install -r requirements.txt'
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
         }
         archiveArtifacts 'dist/add2vals*'
     }
+
 
     // Tahap Deploy ke server
     stage('Deploy to Server') {
