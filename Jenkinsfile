@@ -1,5 +1,5 @@
 node {
-    // Stage: Build
+    // Tahap build
     stage('Build') {
         docker.image('python:3.9').inside {
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
@@ -7,7 +7,7 @@ node {
         }
     }
 
-    // Stage: Test
+    // Tahap test
     stage('Test') {
         docker.image('qnib/pytest').inside {
             sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
@@ -15,12 +15,12 @@ node {
         junit 'test-reports/results.xml'
     }
 
-    // Stage: Approval
+    // Tahap Persetujuan
     stage('Approval') {
-        input message: 'Lanjutkan ke tahap Deploy? (Klik "Proceed" untuk melanjutkan ke tahap Deploy)'
+        input message: 'Lanjut ke tahap deploy? (Klik "Proceed" untuk melanjutkan ke tahap Deploy)'
     }
 
-    // Stage: Deploy
+    // Tahap Deploy
     stage('Deploy') {
         docker.image('python:3.9').inside('-u root') {
             sh 'pip install pyinstaller'
