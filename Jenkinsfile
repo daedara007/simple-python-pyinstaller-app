@@ -25,14 +25,14 @@ node {
 
     // Tahap Deploy lokal
     stage('Deploy') {
-        docker.image('python:3.9').inside {
-            sh 'pip install -r requirements.txt'
+        docker.image('python:3.9').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
+            echo 'Pipeline has finished successfully.'
         }
-        archiveArtifacts 'dist/add2vals*'
+        archiveArtifacts 'dist/add2vals'
     }
-
+}
 
     // Tahap Deploy ke server
     stage('Deploy to Server') {
