@@ -1,5 +1,5 @@
 node {
-    def server = "root@192.168.1.200"  // Ganti dengan username dan IP server
+    def server = "root@192.168.1.201"  // Ganti dengan username dan IP server
     def remotePath = "/opt/deploy"      // Ganti dengan path tujuan di server
 
     // Tahap build
