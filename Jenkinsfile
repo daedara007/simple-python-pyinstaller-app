@@ -1,5 +1,5 @@
 node {
-    def server = "kevin@192.168.1.200"  // Ganti dengan username dan IP server
+    def server = "root@192.168.1.200"  // Ganti dengan username dan IP server
     def remotePath = "/opt/deploy"      // Ganti dengan path tujuan di server
 
     // Tahap build
@@ -26,6 +26,6 @@ node {
     // Tahap Deploy
     stage('Deploy to Server') {
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
-                sh "ssh ${server} 'sudo -S chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals'"
+                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals'"
     }
 }
