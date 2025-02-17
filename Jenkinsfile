@@ -25,7 +25,6 @@ node {
         docker.image('python:3.9').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
-            sleep(time: 1, unit: 'MINUTES')
             echo 'Pipeline has finished successfully.'
         }
         archiveArtifacts 'dist/add2vals'
