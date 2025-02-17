@@ -32,7 +32,6 @@ node {
         }
         archiveArtifacts 'dist/add2vals'
     }
-}
 
     // Tahap Deploy ke server
     stage('Deploy to Server') {
