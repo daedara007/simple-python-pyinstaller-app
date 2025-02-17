@@ -25,10 +25,9 @@ node {
 
     // Tahap Deploy lokal
     stage('Deploy') {
-        docker.image('python:3.9').inside('-u root') {
+        docker.image('arm64v8/python:3.9').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
-            echo 'Pipeline has finished successfully.'
         }
         archiveArtifacts 'dist/add2vals'
     }
@@ -36,5 +35,6 @@ node {
     // Tahap Deploy ke server
     stage('Deploy to Server') {
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
+                echo 'Pipeline has finished successfully.'s
     }
 }
