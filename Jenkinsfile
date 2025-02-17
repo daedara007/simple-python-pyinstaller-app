@@ -36,6 +36,6 @@ node {
     // Tahap Deploy ke server
     stage('Deploy to Server') {
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
-                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals"
+                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals'"
     }
 }
