@@ -23,7 +23,17 @@ node {
         input message: 'Lanjut ke tahap deploy? (Klik "Proceed" untuk melanjutkan ke tahap Deploy)'
     }
 
-    // Tahap Deploy
+    // Tahap Deploy lokal
+    stage('Deploy') {
+        docker.image('python:3.9').inside('-u root') {
+            sh 'pip install pyinstaller'
+            sh 'pyinstaller --onefile sources/add2vals.py'
+            echo 'Pipeline has finished successfully.'
+        }
+        archiveArtifacts 'dist/add2vals'
+    }
+
+    // Tahap Deploy ke server
     stage('Deploy to Server') {
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
                 sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals'"
