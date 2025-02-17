@@ -24,8 +24,8 @@ node {
     stage('Deploy to Server') {
         steps {
             script {
-                def server = "user@your-server-ip" // Ganti dengan username dan IP server
-                def remotePath = "/opt/deploy"    // Ganti dengan path tujuan di server
+                def server = "kevin@192.168.1.200" // Ganti dengan username dan IP server
+                def remotePath = "/var/jenkins"    // Ganti dengan path tujuan di server
 
                 // Copy file ke server menggunakan SCP atau rsync
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
