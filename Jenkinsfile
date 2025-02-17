@@ -23,6 +23,18 @@ node {
         input message: 'Lanjut ke tahap deploy? (Klik "Proceed" untuk melanjutkan ke tahap Deploy)'
     }
 
+    // Tahap build buat servernya
+    stage('Build for ARM64') {
+        docker.image('tonistiigi/binfmt').inside {
+            sh 'docker run --rm --privileged tonistiigi/binfmt --install all'
+        }
+        docker.image('python:3.9').inside {
+            sh 'pip install pyinstaller'
+            sh 'pyinstaller --onefile sources/add2vals.py'
+        }
+        archiveArtifacts 'dist/add2vals'
+    }
+
     // Tahap Deploy
     stage('Deploy to Server') {
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
