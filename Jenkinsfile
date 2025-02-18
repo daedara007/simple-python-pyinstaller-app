@@ -34,14 +34,13 @@ node {
 
     // Tahap Deploy ke server
     stage('Deploy to Server') {
-                //deploy app python ke server
-                sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
-                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals 2 2'"
-                
-                //buat logging
+                //buat logging dan deploy app python
                 sh "ssh ${server} logger 'Mengirim file artifact ke Server...'"
-                sh "scp target/*.jar ${server}:/home"
+                sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
                 sh "ssh ${server} logger 'Berhasil mengirim file ke server'"
+
+                //test app pythonnya
+                sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals 2 2'"
 
                 //sleep/buat jedanya
                 sleep time: 1, unit: 'MINUTES'
