@@ -36,6 +36,12 @@ node {
     stage('Deploy to Server') {
                 sh "scp dist/add2vals ${server}:${remotePath}/add2vals"
                 sh "ssh ${server} 'chmod +x ${remotePath}/add2vals && ${remotePath}/add2vals 2 2'"
+                
+                sh "sshpass -p ${server} logger 'Mengirim file artifact ke Server...'"
+                sh "scp target/*.jar ${server}:/home"
+                sh "sshpass -p ${server} logger 'Berhasil mengirim file ke server'"
+
+
                 sleep time: 1, unit: 'MINUTES'
                 echo 'Pipeline has finished successfully.'
     }
